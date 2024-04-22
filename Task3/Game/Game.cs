@@ -26,7 +26,7 @@ public class Game
     {
         if (!ValidateArgs(_moves))
         {
-            _printer.PrintError("Invalid number of moves: must be odd number of moves");
+            _printer.PrintError("Invalid number of moves: the number of moves must be more than one and must be an odd number.");
             return;
         }
 
@@ -46,7 +46,7 @@ public class Game
             while (!TryGetInput(out input))
             {
                 _printer.PrintError(
-                    $"Invalid move: choose values from menu such as 0, ? and from 1 to {_moves.Length}");
+                    $"Invalid move: choose values from menu such as 0, ? and from 1 to {_moves.Length}.");
                 _printer.PrintInfo("Enter your move: ");
             }
 
@@ -64,8 +64,8 @@ public class Game
                 return false;
             case 0: return true;
             default:
-                _printer.PrintInfo($"Your move: {_moves[input - 1]}", true);
-                _printer.PrintInfo($"Computer move: {_moves[computerMoveIndex - 1]}", true);
+                _printer.PrintInfo($"Your move: {_moves[input - 1]}.", true);
+                _printer.PrintInfo($"Computer move: {_moves[computerMoveIndex]}.", true);
                 _printer.PrintResult(_rules.DetermineWinner(input - 1, computerMoveIndex));
                 _printer.PrintKey(key);
                 _printer.PrintInfo("Hmac checker website: https://www.freeformatter.com/hmac-generator.html");
@@ -91,6 +91,9 @@ public class Game
 
     private static bool ValidateArgs(string[] args)
     {
-        return args.Length % 2 != 0;
+        if (args.Length < 2) return false;
+        var hasDuplicates = args.GroupBy(x => x)
+            .Any(g => g.Count() > 1);
+        return args.Length % 2 != 0 && !hasDuplicates;
     }
 }
